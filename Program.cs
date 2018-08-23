@@ -6,58 +6,51 @@ using System.Threading.Tasks;
 
 namespace QATestLabGame
 {
-    class Fighter
+    class Unit
     {
-        public int hp;
-        public int atack;
-        public string name;
+        public int _hp;
+        protected int Attack;
+        public readonly string Name;
+
+        public Unit(string name)
+        {
+            Name = name;
+            _hp = 100;
+            Attack = 0;
+        }
         public int fight(int enemyHp)
         {                                               //метод атаки по сопернику
-            return enemyHp - atack;
+            return enemyHp - Attack;
         }
     }
-    class HumanMage:Fighter
+    class HumanMage:Unit
     {
-
-        public string name;
-        public int hp=100;
-        public int atack = 10;
         public bool upgraded = false;
-
-        public HumanMage(string name)
+        public HumanMage(string name) : base(name)
         {
-            this.name = name;
+            Attack = 10;
         }
         public double upgrade(int friendAtack)             //метод улучшения союзника
         {
             return friendAtack*1.5;
         }
     }
-    class HumanFighter: Fighter {
-        public string name;
-        private new int hp = 100;
-        public int atack = 15;
-        public bool upgraded =false;
-
-        public int Hp { get => hp; set => hp = value; }
-
-        public HumanFighter(string name)
+    class HumanFighter: Unit {
+                public bool upgraded = false;
+        public HumanFighter(string name):base(name)
         {
-            this.name = name;
+            Attack = 15;
         }
-
-        
     }
-    class HumanArcher : Fighter{
-        public string name;
-        public int hp = 100;
+    class HumanArcher : Unit{
+ 
         public bool upgraded = false;
-        public int atack = 3;
+   
         public int rangedAtack = 7;
 
-        public HumanArcher(string name)
+        public HumanArcher(string name):base(name)
         {
-            this.name = name;
+            Attack = 3;
         }
         public int rangedFight(int enemyHp)
         {                                                    //метод дальней атаки по сопернику
@@ -74,56 +67,35 @@ namespace QATestLabGame
     }
     class OrcFighter { }
     class OrcArcher { }
-    class DeadMage : Fighter {
-        public string name;
-        public int hp = 100;
-        public int atack = 5;
+    class DeadMage : Unit {
         public bool upgraded = false;
-
-        public DeadMage(string name)
+        public DeadMage(string name):base(name)
         {
-            this.name = name;
-        }
-
-        public int fight(int enemyHp)
-        {
-            return enemyHp - atack;
+            Attack = 5;
         }
         public double downgrade(int enemyAtack)             //метод проклятия врага
         {
             return enemyAtack * 0.5;
         }
     }
-    class DeadArcher: Fighter {
-        public string name;
-        public int hp = 100;
+    class DeadArcher: Unit {
         public bool upgraded = false;
-        public int miliAtack = 2;
         public int rangedAtack = 4;
-
-        public DeadArcher(string name)
+        public DeadArcher(string name):base(name)
         {
-            this.name = name;
-        }
-
-        public int miliFight(int enemyHp)
-        {                                                    //метод ближней атаки по сопернику
-            return enemyHp - miliAtack;
+            Attack = 2;
         }
         public int rangedFight(int enemyHp)
         {                                                    //метод дальней атаки по сопернику
             return enemyHp - rangedAtack;
         }
     }
-    class DeadFighter: Fighter{
-        public string name;
-        public int hp = 100;
-        public int atack = 18;
+    class DeadFighter: Unit{
         public bool upgraded = false;
 
-        public DeadFighter(string name)
+        public DeadFighter(string name):base(name)
         {
-            this.name = name;
+            Attack = 18;
         }
     }
 
@@ -167,8 +139,8 @@ namespace QATestLabGame
             OrcArcher orcarcher3 = null;
             
             Random rand = new Random();
-            List<Fighter> lightList = new List<Fighter>();
-            List<Fighter> darkList = new List<Fighter>();
+            List<Unit> lightList = new List<Unit>();
+            List<Unit> darkList = new List<Unit>();
             //   if (rand.Next(0, 2) == 0)                                   //Создание силы света
             if (true)
             {
@@ -243,9 +215,9 @@ namespace QATestLabGame
                     case "HumanFighter":
                         {
                             int whom = rand.Next(0, 8);
-                            list.fight(darkList[whom].hp);
-                            Console.WriteLine(list.name);
-                            Console.WriteLine(list.name, "атаковал", darkList[whom].name);
+                            list.fight(darkList[whom]._hp);
+                            Console.WriteLine(list.fight(darkList[whom]._hp));
+                            Console.WriteLine(list.Name + " атаковал " +  darkList[whom].Name);
                             break;
                         }
 
