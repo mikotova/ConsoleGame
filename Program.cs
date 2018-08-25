@@ -9,54 +9,66 @@ namespace QATestLabGame
     class Unit
     {
         public int _hp;
-        protected int Attack;
-        public readonly string Name;
-
+        public int _attack;
+        public int _rangedAttack;
+        public double _buff;
+        public readonly string _name;
+        public bool _upgraded = false;
         public Unit(string name)
         {
-            Name = name;
+            _name = name;
             _hp = 100;
-            Attack = 0;
+            _attack = 0;
+            _rangedAttack = 0;
+            _buff = 1;
         }
         public int fight(int enemyHp)
         {                                               //метод атаки по сопернику
-            return enemyHp - Attack;
+            if (_upgraded == true)
+            {
+                enemyHp -= Convert.ToInt32(_attack * _buff);                            //wrong buff
+                _upgraded = false;
+            }
+            else
+            {
+                enemyHp -= _attack;
+            }
+            return enemyHp;
+        }
+        public int rangedFight(int enemyHp)
+        {                                                    //метод дальней атаки по сопернику
+            if (_upgraded == true)
+            {
+                enemyHp -= Convert.ToInt32(_rangedAttack * _buff);
+                _upgraded = false;
+            }
+            else
+            {
+                enemyHp -= _rangedAttack;
+            }
+            return enemyHp;
         }
     }
     class HumanMage:Unit
     {
-        public bool upgraded = false;
         public HumanMage(string name) : base(name)
         {
-            Attack = 10;
-        }
-        public double upgrade(int friendAtack)             //метод улучшения союзника
-        {
-            return friendAtack*1.5;
+            _attack = 10;
+            _buff = 1.5;
         }
     }
     class HumanFighter: Unit {
-                public bool upgraded = false;
         public HumanFighter(string name):base(name)
         {
-            Attack = 15;
+            _attack = 15;
         }
     }
     class HumanArcher : Unit{
- 
-        public bool upgraded = false;
-   
-        public int rangedAtack = 7;
-
         public HumanArcher(string name):base(name)
         {
-            Attack = 3;
-        }
-        public int rangedFight(int enemyHp)
-        {                                                    //метод дальней атаки по сопернику
-            return enemyHp - rangedAtack;
-        }
-        
+            _attack = 3;
+            _rangedAttack = 7;
+        }  
     }
     class ElfMage { }
     class ElfArcher { }
@@ -68,34 +80,23 @@ namespace QATestLabGame
     class OrcFighter { }
     class OrcArcher { }
     class DeadMage : Unit {
-        public bool upgraded = false;
         public DeadMage(string name):base(name)
         {
-            Attack = 5;
-        }
-        public double downgrade(int enemyAtack)             //метод проклятия врага
-        {
-            return enemyAtack * 0.5;
+            _attack = 5;
+            _buff = 0.5;
         }
     }
     class DeadArcher: Unit {
-        public bool upgraded = false;
-        public int rangedAtack = 4;
         public DeadArcher(string name):base(name)
         {
-            Attack = 2;
-        }
-        public int rangedFight(int enemyHp)
-        {                                                    //метод дальней атаки по сопернику
-            return enemyHp - rangedAtack;
+            _attack = 2;
+            _rangedAttack = 4;
         }
     }
     class DeadFighter: Unit{
-        public bool upgraded = false;
-
         public DeadFighter(string name):base(name)
         {
-            Attack = 18;
+            _attack = 18;
         }
     }
 
@@ -208,25 +209,98 @@ namespace QATestLabGame
                 darkList.Add(darcher3);
             }
 
-            string player = lightList[1].GetType().Name;
-            foreach (var list in lightList) {  
-                switch (list.GetType().Name)
+            /////////////////////////////////////////////////////////////////////////////// game ////////////////////////////////////////////////////////////////////////////////////////
+            do
+            {
+                foreach (var list in lightList)
                 {
-                    case "HumanFighter":
-                        {
-                            int whom = rand.Next(0, 8);
-                            list.fight(darkList[whom]._hp);
-                            Console.WriteLine(list.fight(darkList[whom]._hp));
-                            Console.WriteLine(list.Name + " атаковал " +  darkList[whom].Name);
-                            break;
-                        }
+                    int whom = rand.Next(0, 8);
+                    switch (list.GetType().Name)
+                    {
+                        case "HumanFighter":
+                            {
+                                AtackUnit(list, darkList[whom]);
+                                
+                                break;                                                      //todo: death
+                            }
 
-                    case "HumanMage":
-                        break;
-                    case "HumanArcher":
-                        break;
+                        case "HumanMage":
+                            {
+                                if (rand.Next(0, 2) == 0)
+                                {
+                                    AtackUnit(list, darkList[whom]);
+                                }
+                                else
+                                {
+                                    if (lightList[whom]._upgraded == false)
+                                        BuffUnit(list, lightList[whom]);
+                                    else
+                                    {
+                                        whom = rand.Next(0, 8);
+                                        BuffUnit(list, lightList[whom]);
+                                    }
+                                }
+                                break;
+                            }
+                        case "HumanArcher":
+                            {
+                                if (rand.Next(0, 2) == 0)
+                                {
+                                    AtackUnit(list, darkList[whom]);
+                                }
+                                else
+                                {
+                                    RangedAtackUnit(list, darkList[whom]);
+                                }
+                                break;
+                            }
+                    }
+                }
+                foreach (var list in darkList)
+                {
+                    int whom = rand.Next(0, 8);
+                    switch (list.GetType().Name)
+                    {
+                        case "DeadFighter":
+                            {
+                                AtackUnit(list, lightList[whom]);
+                                break;
+                            }
+
+                        case "DeadMage":
+                            {
+                                if (rand.Next(0, 2) == 0)
+                                {
+                                    AtackUnit(list, lightList[whom]);
+                                }
+                                else
+                                {
+                                    if (lightList[whom]._upgraded == false)
+                                        BuffUnit(list, lightList[whom]);
+                                    else
+                                    {
+                                        whom = rand.Next(0, 8);
+                                        BuffUnit(list, lightList[whom]);
+                                    }
+                                }
+                                break;
+                            }
+                        case "DeadArcher":
+                            {
+                                if (rand.Next(0, 2) == 0)
+                                {
+                                    AtackUnit(list, lightList[whom]);
+                                }
+                                else
+                                {
+                                    RangedAtackUnit(list, lightList[whom]);
+                                }
+                                break;
+                            }
+                    }
                 }
             }
+            while (lightList[0]._hp > 0);
 
                 //todo: геймплей
                 //while (mage1.hp > 0 && dmage1.hp > 0)
@@ -239,13 +313,25 @@ namespace QATestLabGame
 
                 Console.ReadKey();
         }
-        static int StartGame(List<object> myList)
+        static void AtackUnit(Unit fightingUnit, Unit targetUnit)               //функция для атаки
         {
-            
-            return 0;
+            targetUnit._hp = fightingUnit.fight(targetUnit._hp);
+            Console.WriteLine(fightingUnit._name + " нанёс ближнюю атаку по " + targetUnit._name + ". Хп цели: " + targetUnit._hp);
+        }
+
+        static void RangedAtackUnit(Unit fightingUnit, Unit targetUnit)               //функция для дальней атаки
+        {
+            targetUnit._hp = fightingUnit.rangedFight(targetUnit._hp);
+            Console.WriteLine(fightingUnit._name + " нанёс дальнюю атаку по " + targetUnit._name + ". Хп цели: " + targetUnit._hp);
+        }
+
+        static void BuffUnit(Unit fightingUnit, Unit targetUnit)               //функция для улучшения атаки
+        {
+            targetUnit._upgraded = true;
+            targetUnit._buff = fightingUnit._buff;
+            Console.WriteLine(fightingUnit._name + " изменил атаку " + targetUnit._name + " на " + fightingUnit._buff);
         }
         
-       
     }
 }
 
