@@ -26,7 +26,7 @@ namespace QATestLabGame
         {                                               //метод атаки по сопернику
             if (_upgraded == true)
             {
-                enemyHp -= Convert.ToInt32(_attack * _buff);                            //wrong buff
+                enemyHp -= Convert.ToInt32(_attack * _buff);                            
                 _upgraded = false;
             }
             else
@@ -49,44 +49,84 @@ namespace QATestLabGame
             return enemyHp;
         }
     }
-    class HumanMage:Unit
+    class HumanMage: Unit
     {
         public HumanMage(string name) : base(name)
+        {
+            _attack = 4;
+            _buff = 1.5;
+        }
+    }
+    class HumanFighter: Unit
+    {
+        public HumanFighter(string name):base(name)
+        {
+            _attack = 18;
+        }
+    }
+    class HumanArcher: Unit
+    {
+        public HumanArcher(string name):base(name)
+        {
+            _attack = 3;
+            _rangedAttack = 5;
+        }  
+    }
+    class ElfMage: Unit
+    {
+        public ElfMage(string name) : base(name)
         {
             _attack = 10;
             _buff = 1.5;
         }
     }
-    class HumanFighter: Unit {
-        public HumanFighter(string name):base(name)
+    class ElfArcher: Unit
+    {
+        public ElfArcher(string name) : base(name)
+        {
+            _attack = 3;
+            _rangedAttack = 7;
+        }
+    }
+    class ElfFighter:Unit
+    {
+        public ElfFighter(string name) : base(name)
         {
             _attack = 15;
         }
     }
-    class HumanArcher : Unit{
-        public HumanArcher(string name):base(name)
-        {
-            _attack = 3;
-            _rangedAttack = 7;
-        }  
-    }
-    class ElfMage { }
-    class ElfArcher { }
-    class ElfFighter { }
-    class OrcMage
+    class OrcMage: Unit
     {
-    
+        public OrcMage(string name) : base(name)                //todo: debuff
+        {
+           _buff = 1.5;
+        }
     }
-    class OrcFighter { }
-    class OrcArcher { }
-    class DeadMage : Unit {
+    class OrcFighter: Unit
+    {
+        public OrcFighter(string name) : base(name)
+        {
+            _attack = 20;
+        }
+    }
+    class OrcArcher: Unit
+    {
+        public OrcArcher(string name) : base(name)
+        {
+            _attack = 2;
+            _rangedAttack = 3;
+        }
+    }
+    class DeadMage : Unit
+    {
         public DeadMage(string name):base(name)
         {
             _attack = 5;
             _buff = 0.5;
         }
     }
-    class DeadArcher: Unit {
+    class DeadArcher: Unit
+    {
         public DeadArcher(string name):base(name)
         {
             _attack = 2;
@@ -106,107 +146,58 @@ namespace QATestLabGame
     {
         static void Main(string[] args)
         {
-            HumanMage mage1 = null;
-            HumanFighter fighter1 = null;
-            HumanFighter fighter2 = null;
-            HumanFighter fighter3 = null;
-            HumanFighter fighter4 = null;
-            HumanArcher archer1 = null;
-            HumanArcher archer2 = null;
-            HumanArcher archer3 = null;
-            ElfMage elfmage1 = null;
-            ElfFighter elffighter1 = null;
-            ElfFighter elffighter2 = null;
-            ElfFighter elffighter3 = null;
-            ElfFighter elffighter4 = null;
-            ElfArcher elfarcher1 = null;
-            ElfArcher elfarcher2 = null;
-            ElfArcher elfarcher3 = null;
-            DeadMage dmage1 = null;
-            DeadFighter dfighter1 = null;
-            DeadFighter dfighter2 = null;
-            DeadFighter dfighter3 = null;
-            DeadFighter dfighter4 = null;
-            DeadArcher darcher1 = null;
-            DeadArcher darcher2 = null;
-            DeadArcher darcher3 = null;
-            OrcMage orcmage1 = null;
-            OrcFighter orcfighter1 = null;
-            OrcFighter orcfighter2 = null;
-            OrcFighter orcfighter3 = null;
-            OrcFighter orcfighter4 = null;
-            OrcArcher orcarcher1 = null;
-            OrcArcher orcarcher2 = null;
-            OrcArcher orcarcher3 = null;
-            
+            bool continueGame = true;
+            bool winner=true;                                                                //по умолчанию победитель - свет
             Random rand = new Random();
             List<Unit> lightList = new List<Unit>();
             List<Unit> darkList = new List<Unit>();
-            //   if (rand.Next(0, 2) == 0)                                   //Создание силы света
-            if (true)
+           if (rand.Next(0, 2) == 0)                                                         //Создание силы света
             {
                 Console.WriteLine("Первый отряд состоит из людей.");
-                mage1 = new HumanMage("Человек маг");
-                fighter1 = new HumanFighter("Первый человек воин");
-                fighter2 = new HumanFighter("Второй человек воин");
-                fighter3 = new HumanFighter("Третий человек воин");
-                fighter4 = new HumanFighter("Четвертый человек воин");
-                archer1 = new HumanArcher("Первый человек лучник");
-                archer2 = new HumanArcher("Второй человек лучник");
-                archer3 = new HumanArcher("Третий человек лучник");
-                lightList.Add(mage1);                                                               //todo доработать
-                lightList.Add(fighter1);
-                lightList.Add(fighter2);
-                lightList.Add(fighter3);
-                lightList.Add(fighter4);
-                lightList.Add(archer1);
-                lightList.Add(archer2);
-                lightList.Add(archer3);
+                lightList.Add(new HumanMage("Человек маг"));                                                               
+                lightList.Add(new HumanFighter("Первый человек воин"));
+                lightList.Add(new HumanFighter("Второй человек воин"));
+                lightList.Add(new HumanFighter("Третий человек воин"));
+                lightList.Add(new HumanFighter("Четвертый человек воин"));
+                lightList.Add(new HumanArcher("Первый человек арбалетчик"));
+                lightList.Add(new HumanArcher("Второй человек арбалетчик"));
+                lightList.Add(new HumanArcher("Третий человек арбалетчик"));
             }
             else
             {
                 Console.WriteLine("Первый отряд состоит из эльфов.");
-                elfmage1 = new ElfMage();
-                elffighter1 = new ElfFighter();
-                elffighter2 = new ElfFighter();
-                elffighter3 = new ElfFighter();
-                elffighter4 = new ElfFighter();
-                elfarcher1 = new ElfArcher();
-                elfarcher2 = new ElfArcher();
-                elfarcher3 = new ElfArcher();
+                lightList.Add(new ElfMage("Эльф маг"));
+                lightList.Add(new ElfFighter("Первый эльф воин"));
+                lightList.Add(new ElfFighter("Второй эльф воин"));
+                lightList.Add(new ElfFighter("Третий эльф воин"));
+                lightList.Add(new ElfFighter("Четвертый эльф воин"));
+                lightList.Add(new ElfArcher("Первый эльф лучник"));
+                lightList.Add(new ElfArcher("Второй эльф лучник"));
+                lightList.Add(new ElfArcher("Третий эльф лучник"));
             }
-            //           if (rand.Next(0, 2) == 0)                               //создание силы тьмы
-            if(false)
+            if(rand.Next(0, 2) == 0)                                                            //создание силы тьмы
             {
                 Console.WriteLine("Второй отряд состоит из орков.");
-                orcmage1 = new OrcMage();
-                orcfighter1 = new OrcFighter();
-                orcfighter2 = new OrcFighter();
-                orcfighter3 = new OrcFighter();
-                orcfighter4 = new OrcFighter();
-                orcarcher1 = new OrcArcher();
-                orcarcher2 = new OrcArcher();
-                orcarcher3 = new OrcArcher();
+                darkList.Add(new OrcMage("Шаман"));
+                darkList.Add(new OrcFighter("Первый гоблин"));
+                darkList.Add(new OrcFighter("Второй гоблин"));
+                darkList.Add(new OrcFighter("Третий гоблин"));
+                darkList.Add(new OrcFighter("Четвертый гоблин"));
+                darkList.Add(new OrcArcher("Первый орк лучник"));
+                darkList.Add(new OrcArcher("Второй орк лучник"));
+                darkList.Add(new OrcArcher("Третий орк лучник"));
             }
             else
             {
                 Console.WriteLine("Второй отряд состоит из нежити.");
-                dmage1 = new DeadMage("Некромант");
-                dfighter1 = new DeadFighter("Первый зомби");
-                dfighter2 = new DeadFighter("Второй зомби");
-                dfighter3 = new DeadFighter("Третий зомби");
-                dfighter4 = new DeadFighter("Четвертый зомби");
-                darcher1 = new DeadArcher("Первый охотник");
-                darcher2 = new DeadArcher("Второй охотник");
-                darcher3 = new DeadArcher("Третий охотник");
-                darkList.Add(dmage1);                                                               //todo доработать
-                darkList.Add(dfighter1);
-                darkList.Add(dfighter2);
-                darkList.Add(dfighter3);
-                darkList.Add(dfighter4);
-                darkList.Add(darcher1);
-                darkList.Add(darcher2);
-                darkList.Add(darcher3);
+                darkList.Add(new DeadMage("Некромант"));                                                               
+                darkList.Add(new DeadFighter("Первый зомби"));
+                darkList.Add(new DeadFighter("Второй зомби"));
+                darkList.Add(new DeadFighter("Третий зомби"));
+                darkList.Add(new DeadFighter("Четвертый зомби"));
+                darkList.Add(new DeadArcher("Первый охотник"));
+                darkList.Add(new DeadArcher("Второй охотник"));
+                darkList.Add(new DeadArcher("Третий охотник"));
             }
 
             /////////////////////////////////////////////////////////////////////////////// game ////////////////////////////////////////////////////////////////////////////////////////
@@ -214,43 +205,82 @@ namespace QATestLabGame
             {
                 foreach (var list in lightList)
                 {
-                    int whom = rand.Next(0, 8);
+                    int whomEnemy = rand.Next(0, darkList.Count);
+                    int whomFriend = rand.Next(0, lightList.Count);
                     switch (list.GetType().Name)
                     {
                         case "HumanFighter":
+                        case "ElfFighter":
                             {
-                                AtackUnit(list, darkList[whom]);
-                                
-                                break;                                                      //todo: death
-                            }
-
-                        case "HumanMage":
-                            {
-                                if (rand.Next(0, 2) == 0)
+                                if(darkList.Count != 0)
                                 {
-                                    AtackUnit(list, darkList[whom]);
+                                    AtackUnit(list, darkList[whomEnemy]);
+                                    if (IsDead(darkList[whomEnemy]))
+                                    {
+                                        darkList.RemoveAt(whomEnemy);
+                                    }
                                 }
                                 else
                                 {
-                                    if (lightList[whom]._upgraded == false)
-                                        BuffUnit(list, lightList[whom]);
+                                    winner = true;
+                                    continueGame = false;
+                                }
+                                break;                                                      
+                            }
+
+                        case "HumanMage":
+                        case "ElfMage":
+                            {
+                                if (darkList.Count != 0)
+                                {
+                                    if (rand.Next(0, 2) == 0)
+                                    {
+                                        AtackUnit(list, darkList[whomEnemy]);
+                                        if (IsDead(darkList[whomEnemy]))
+                                        {
+                                            darkList.RemoveAt(whomEnemy);
+                                        }
+                                    }
                                     else
                                     {
-                                        whom = rand.Next(0, 8);
-                                        BuffUnit(list, lightList[whom]);
+                                        if (lightList[whomFriend]._upgraded == false)
+                                            BuffUnit(list, lightList[whomFriend]);
+                                        else
+                                        {
+                                            whomFriend = rand.Next(0, lightList.Count);
+                                            BuffUnit(list, lightList[whomFriend]);
+                                        }
                                     }
+                                }
+                                else
+                                {
+                                    winner = true;
+                                    continueGame = false;
                                 }
                                 break;
                             }
                         case "HumanArcher":
+                        case "ElfArcher":
                             {
-                                if (rand.Next(0, 2) == 0)
+                                if (darkList.Count != 0)
                                 {
-                                    AtackUnit(list, darkList[whom]);
+                                    if (rand.Next(0, 2) == 0)
+                                    {
+                                        AtackUnit(list, darkList[whomEnemy]);
+                                    }
+                                    else
+                                    {
+                                        RangedAtackUnit(list, darkList[whomEnemy]);
+                                    }
+                                    if (IsDead(darkList[whomEnemy]))
+                                    {
+                                        darkList.RemoveAt(whomEnemy);
+                                    }
                                 }
                                 else
                                 {
-                                    RangedAtackUnit(list, darkList[whom]);
+                                    winner = true;
+                                    continueGame = false;
                                 }
                                 break;
                             }
@@ -258,71 +288,162 @@ namespace QATestLabGame
                 }
                 foreach (var list in darkList)
                 {
-                    int whom = rand.Next(0, 8);
+                    int whomEnemy = rand.Next(0, lightList.Count);
+                    int whomFriend = rand.Next(0, darkList.Count);
                     switch (list.GetType().Name)
                     {
                         case "DeadFighter":
+                        case "OrcFighter":
                             {
-                                AtackUnit(list, lightList[whom]);
+                                if (lightList.Count != 0)
+                                {
+                                    AtackUnit(list, lightList[whomEnemy]);
+                                    if (IsDead(lightList[whomEnemy]))
+                                    {
+                                        lightList.RemoveAt(whomEnemy);
+                                    }
+                                }
+                                else
+                                {
+                                    winner = false;
+                                    continueGame = false;
+                                }
                                 break;
                             }
 
                         case "DeadMage":
                             {
-                                if (rand.Next(0, 2) == 0)
+                                if (lightList.Count != 0)
                                 {
-                                    AtackUnit(list, lightList[whom]);
+                                    if (rand.Next(0, 2) == 0)
+                                    {
+                                        AtackUnit(list, lightList[whomEnemy]);
+                                        if (IsDead(lightList[whomEnemy]))
+                                        {
+                                            lightList.RemoveAt(whomEnemy);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (lightList[whomEnemy]._upgraded == false)
+                                            BuffUnit(list, lightList[whomEnemy]);
+                                        else
+                                        {
+                                            whomEnemy = rand.Next(0, lightList.Count);
+                                            BuffUnit(list, lightList[whomEnemy]);
+                                        }
+                                    }
                                 }
                                 else
                                 {
-                                    if (lightList[whom]._upgraded == false)
-                                        BuffUnit(list, lightList[whom]);
+                                    winner = false;
+                                    continueGame = false;
+                                }
+                                break;
+                            }
+                        case "OrcMage":
+                            {
+                                if (lightList.Count != 0)
+                                {
+                                    if (rand.Next(0, 2) == 0)                                               //снятие улучшения
+                                    {
+                                        bool up = false;
+                                        foreach(var l in lightList)
+                                        {
+                                            if (l._upgraded==true)
+                                            {
+                                                l._upgraded = false;
+                                                Console.WriteLine(list._name + "снял улучшение с" + l._name);
+                                                up = true;
+                                                break;
+                                            }
+                                            
+                                        }
+                                        if (up == false)
+                                                Console.WriteLine(list._name + " попытался снять улучшение, но никого не нашел.");
+                                    }
                                     else
                                     {
-                                        whom = rand.Next(0, 8);
-                                        BuffUnit(list, lightList[whom]);
+                                        if (darkList[whomFriend]._upgraded == false)                        //улучшение
+                                            BuffUnit(list, darkList[whomFriend]);
+                                        else
+                                        {
+                                            whomFriend = rand.Next(0, darkList.Count);
+                                            BuffUnit(list, darkList[whomFriend]);
+                                        }
                                     }
+                                }
+                                else
+                                {
+                                    winner = false;
+                                    continueGame = false;
                                 }
                                 break;
                             }
                         case "DeadArcher":
+                        case "OrcArcher":
                             {
-                                if (rand.Next(0, 2) == 0)
+                                if (lightList.Count != 0)
                                 {
-                                    AtackUnit(list, lightList[whom]);
+                                    if (rand.Next(0, 2) == 0)
+                                    {
+                                        AtackUnit(list, lightList[whomEnemy]);
+                                    }
+                                    else
+                                    {
+                                        RangedAtackUnit(list, lightList[whomEnemy]);
+                                    }
+                                    if (IsDead(lightList[whomEnemy]))
+                                    {
+                                        lightList.RemoveAt(whomEnemy);
+                                    }
                                 }
                                 else
                                 {
-                                    RangedAtackUnit(list, lightList[whom]);
-                                }
+                                    winner = false;
+                                    continueGame = false;
+                                 }
                                 break;
                             }
                     }
-                }
+                } 
             }
-            while (lightList[0]._hp > 0);
-
-                //todo: геймплей
-                //while (mage1.hp > 0 && dmage1.hp > 0)
-                //{
-                //    mage1.hp = dmage1.fight(mage1.hp);
-                //    Console.WriteLine($"Некромант нанес атаку магу. ХП мага: {mage1.hp}");
-                //    dmage1.hp = mage1.fight(dmage1.hp);
-                //    Console.WriteLine($"Маг нанес атаку некроманту. ХП некроманта: {dmage1.hp}");
-                //}
-
+            
+            while (continueGame==true);
+           if (winner)
+                {
+                    Console.WriteLine("Победили силы света. ");
+                    Winner(lightList);
+                }
+                else
+                {
+                    Console.WriteLine("Победили силы тьмы. ");
+                    Winner(darkList);
+                }
                 Console.ReadKey();
         }
+
+
         static void AtackUnit(Unit fightingUnit, Unit targetUnit)               //функция для атаки
         {
+            int attak;
+            if (fightingUnit._upgraded == true)
+                attak = Convert.ToInt32(fightingUnit._attack * fightingUnit._buff);
+            else
+                attak = fightingUnit._attack;
             targetUnit._hp = fightingUnit.fight(targetUnit._hp);
-            Console.WriteLine(fightingUnit._name + " нанёс ближнюю атаку по " + targetUnit._name + ". Хп цели: " + targetUnit._hp);
+            Console.WriteLine(fightingUnit._name + " нанёс ближнюю атаку в размере " + attak + " по " + targetUnit._name + ". Хп цели: " + targetUnit._hp);
         }
 
         static void RangedAtackUnit(Unit fightingUnit, Unit targetUnit)               //функция для дальней атаки
         {
+            int attak;
+            if (fightingUnit._upgraded == true)
+                attak = Convert.ToInt32(fightingUnit._rangedAttack * fightingUnit._buff);
+            else
+                attak = fightingUnit._rangedAttack;
             targetUnit._hp = fightingUnit.rangedFight(targetUnit._hp);
-            Console.WriteLine(fightingUnit._name + " нанёс дальнюю атаку по " + targetUnit._name + ". Хп цели: " + targetUnit._hp);
+            Console.WriteLine(fightingUnit._name + " нанёс дальнюю атаку в размере "  + attak + " по " + targetUnit._name + ". Хп цели: " + targetUnit._hp);
         }
 
         static void BuffUnit(Unit fightingUnit, Unit targetUnit)               //функция для улучшения атаки
@@ -330,6 +451,26 @@ namespace QATestLabGame
             targetUnit._upgraded = true;
             targetUnit._buff = fightingUnit._buff;
             Console.WriteLine(fightingUnit._name + " изменил атаку " + targetUnit._name + " на " + fightingUnit._buff);
+        }
+
+        static bool IsDead(Unit man)
+        {
+            if (man._hp <= 0)
+            {
+                Console.WriteLine(man._name + " умер.");
+                return true;
+            }
+            else
+                return false;
+        }
+
+        static void Winner(List<Unit> list)
+        {
+            Console.WriteLine("В живых остались: ");
+            foreach(var a in list)
+            {
+                Console.WriteLine(a._name);
+            }
         }
         
     }
