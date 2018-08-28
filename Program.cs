@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
+using NLog;
 
 namespace QATestLabGame
 {
@@ -142,16 +145,32 @@ namespace QATestLabGame
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    class Program
+    static class Program
     {
+        public static void Shuffle<T>(this IList<T> list)
+        {
+            int n = list.Count;
+            Random rnd = new Random();
+            while (n > 1)
+            {
+                int k = (rnd.Next(0, n) % n);
+                n--;
+                T value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
+        }
+        private static Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         static void Main(string[] args)
         {
+            
             bool continueGame = true;
             bool winner=true;                                                                //по умолчанию победитель - свет
             Random rand = new Random();
             List<Unit> lightList = new List<Unit>();
             List<Unit> darkList = new List<Unit>();
-           if (rand.Next(0, 2) == 0)                                                         //Создание силы света
+            _logger.Info("Game Started!");
+            if (rand.Next(0, 2) == 0)                                                         //Создание силы света
             {
                 Console.WriteLine("Первый отряд состоит из людей.");
                 lightList.Add(new HumanMage("Человек маг"));                                                               
@@ -201,8 +220,12 @@ namespace QATestLabGame
             }
 
             /////////////////////////////////////////////////////////////////////////////// game ////////////////////////////////////////////////////////////////////////////////////////
+
+            
             do
             {
+                Shuffle(lightList);
+                Shuffle(darkList);
                 foreach (var list in lightList)
                 {
                     int whomEnemy = rand.Next(0, darkList.Count);
@@ -419,9 +442,13 @@ namespace QATestLabGame
                 {
                     Console.WriteLine("Победили силы тьмы. ");
                     Winner(darkList);
-                }
-                Console.ReadKey();
+                 }
+            _logger.Info("Game finished!");
+            Console.ReadKey();
         }
+
+        public static Random rng = new Random();
+
 
 
         static void AtackUnit(Unit fightingUnit, Unit targetUnit)               //функция для атаки
@@ -473,6 +500,7 @@ namespace QATestLabGame
             }
         }
         
+
     }
 }
 
